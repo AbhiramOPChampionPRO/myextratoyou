@@ -323,7 +323,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Write back to file
       writeFileSync(requestsPath, JSON.stringify(requests, null, 2));
       
-      // Mark the book as issued
+      // Mark the book as issued and increase donor rating
       const booksPath = join(process.cwd(), 'data', 'book.json');
       try {
         const booksData = readFileSync(booksPath, 'utf-8');
@@ -334,9 +334,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         if (bookIndex !== -1) {
           books[bookIndex].book_issued = 'Yes';
           writeFileSync(booksPath, JSON.stringify(books, null, 2));
+          
+          // Increase donor's rating by 1
+          const donorEmail = books[bookIndex].donorEmail;
+          if (donorEmail) {
+            const donor = await storage.getUserByEmail(donorEmail);
+            if (donor) {
+              const updatedDonor = {
+                ...donor,
+                stars: donor.stars + 1
+              };
+              await storage.updateUser(donor.id, updatedDonor);
+              console.log(`Increased rating for donor ${donorEmail} to ${updatedDonor.stars} stars`);
+            }
+          }
         }
       } catch (err) {
-        console.error('Error updating book issued status:', err);
+        console.error('Error updating book issued status or donor rating:', err);
       }
       
       res.status(201).json({ message: "Request sent successfully!", request: newRequest });

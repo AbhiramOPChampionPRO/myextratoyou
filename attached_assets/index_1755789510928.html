@@ -1,0 +1,2196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyExtraToYou - BooksForAll</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #f8f9fa;
+            --secondary-bg: #ffffff;
+            --primary-text: #2c3e50;
+            --secondary-text: #7f8c8d;
+            --accent: #3498db;
+            --accent-hover: #2980b9;
+            --border-color: #e9ecef;
+            --button-bg: #ecf0f1;
+            --button-text: #2c3e50;
+            --shadow: 0 2px 10px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --primary-bg: #1a1a1a;
+            --secondary-bg: #2d2d2d;
+            --primary-text: #e8e8e8;
+            --secondary-text: #b0b0b0;
+            --accent: #4a9eff;
+            --accent-hover: #357abd;
+            --border-color: #404040;
+            --button-bg: #404040;
+            --button-text: #e8e8e8;
+            --shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--primary-bg);
+            color: var(--primary-text);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: var(--secondary-bg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: var(--transition);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            color: var(--secondary-text);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            color: var(--accent);
+            background: var(--button-bg);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .toggle-mode {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .toggle-mode:hover {
+            background: var(--button-bg);
+        }
+
+        .toggle-mode svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--primary-text);
+        }
+
+        .login-btn {
+            padding: 0.5rem 1.2rem;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .login-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .user-profile {
+            position: relative;
+            display: none;
+            align-items: center;
+        }
+
+        .user-profile.active {
+            display: flex;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .user-info:hover {
+            background: var(--button-bg);
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--primary-text);
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .user-stars {
+            font-size: 0.9rem;
+            color: var(--secondary-text);
+        }
+
+        .dropdown-arrow {
+            background: none;
+            border: none;
+            color: var(--secondary-text);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--secondary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            min-width: 200px;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .user-dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: none;
+            border: none;
+            text-align: left;
+            color: var(--primary-text);
+            cursor: pointer;
+            transition: var(--transition);
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .dropdown-item:first-child {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .dropdown-item:hover {
+            background: var(--button-bg);
+        }
+
+        .content {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .section {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .main-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--secondary-text);
+            margin-bottom: 2rem;
+        }
+
+        .topic {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary-text);
+            margin-bottom: 1.5rem;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: var(--primary-text);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--secondary-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: var(--shadow);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--secondary-text);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            background: var(--button-bg);
+        }
+
+        .modal-content h2 {
+            color: var(--primary-text);
+            text-align: center;
+        }
+
+        .modal-content label {
+            color: var(--primary-text);
+            font-weight: 600;
+        }
+
+        .modal-content input {
+            padding: 0.7rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--primary-bg);
+            color: var(--primary-text);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .modal-actions button {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .captcha-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .captcha-row input {
+            flex: 1;
+        }
+
+        .welcome-screen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .welcome-screen.active {
+            display: flex;
+        }
+
+        .welcome-content {
+            background: var(--secondary-bg);
+            padding: 3rem;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .welcome-content h2 {
+            color: var(--accent);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-content p {
+            color: var(--primary-text);
+            margin-bottom: 2rem;
+        }
+
+        #section-goods {
+            display: none;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        #section-goods.active {
+            display: block;
+        }
+
+        .goods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            background: var(--secondary-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            justify-content: space-between;
+        }
+
+        .buy-btn {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+        }
+
+        .buy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .reject-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+        }
+
+        .reject-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);
+        }
+
+        .seller-info {
+            background: var(--button-bg);
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+        }
+
+        .banned-user {
+            opacity: 0.6;
+            border: 2px solid #e74c3c;
+        }
+
+        .banned-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .product-images {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+        }
+
+        .product-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .product-info h3 {
+            color: var(--primary-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-info p {
+            color: var(--secondary-text);
+            margin-bottom: 0.3rem;
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 0.2rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin: 0.5rem 0;
+        }
+
+        .star {
+            color: #ddd;
+            transition: color 0.2s;
+        }
+
+        .star.filled {
+            color: #ffc107;
+        }
+
+        .user-profile {
+            display: none;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-profile.active {
+            display: flex;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .user-name {
+            color: var(--primary-text);
+            font-weight: 600;
+        }
+
+        .user-stars {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            padding: 0.4rem 0.8rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .user-nav-btn {
+            display: none;
+        }
+
+        .user-nav-btn.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--secondary-bg);
+                box-shadow: var(--shadow);
+                display: none;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 0 1rem;
+            }
+
+            .modal-content {
+                margin: 1rem;
+                width: calc(100% - 2rem);
+            }
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        .success-message {
+            color: #27ae60;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Help Button Styles */
+        .help-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(231, 76, 60, 0.4);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .help-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(231, 76, 60, 0.6);
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Help Modal Styles */
+        .help-modal {
+            background: var(--secondary-bg);
+            border-radius: 16px;
+            max-width: 600px;
+            width: 95%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 2px solid var(--accent);
+        }
+
+        .help-content {
+            padding: 2rem;
+        }
+
+        .help-content h2 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        .help-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .help-option {
+            background: var(--button-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .help-option:hover {
+            border-color: var(--accent);
+            background: var(--primary-bg);
+            transform: translateY(-2px);
+        }
+
+        .help-option.selected {
+            border-color: var(--accent);
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .help-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+
+        .help-text {
+            flex: 1;
+        }
+
+        .help-text h4 {
+            color: var(--primary-text);
+            margin-bottom: 0.3rem;
+        }
+
+        .help-text p {
+            color: var(--secondary-text);
+            font-size: 0.9rem;
+        }
+
+        .custom-problem {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .custom-problem.active {
+            display: block;
+        }
+
+        /* Enhanced Design Updates */
+        body {
+            background: linear-gradient(135deg, var(--primary-bg), var(--secondary-bg));
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .navbar {
+            background: rgba(45, 45, 45, 0.95);
+        }
+
+        .main-title {
+            background: linear-gradient(45deg, var(--accent), #2980b9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section {
+            background: var(--secondary-bg);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        .content {
+            background: transparent;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-left">
+            <span class="logo"><span class="logo-icon">📚</span>MyExtraToYou</span>
+            <div class="nav-menu" id="navMenu">
+                <button class="nav-btn active" data-section="home">Home</button>
+                <button class="nav-btn" data-section="about">About Us</button>
+                <button class="nav-btn" data-section="credits">Credits</button>
+            </div>
+        </div>
+        <div class="nav-right">
+            <button class="toggle-mode" id="toggleModeBtn" aria-label="Toggle light/dark mode">
+                <svg id="themeIcon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                </svg>
+            </button>
+            <button class="login-btn" id="loginBtn">LOGIN</button>
+            <div class="user-profile" id="userProfile">
+                <div class="user-info" id="userInfo">
+                    <div class="user-avatar" id="userAvatar"></div>
+                    <span class="user-name" id="userName"></span>
+                    <div class="user-stars">⭐ <span id="userStars">0</span></div>
+                    <button class="dropdown-arrow" id="dropdownArrow">▼</button>
+                </div>
+                <div class="user-dropdown" id="userDropdown">
+                    <button class="dropdown-item" data-section="donate">📚 Donate</button>
+                    <button class="dropdown-item" data-section="goods">🔍 Check for Goods</button>
+                    <button class="dropdown-item" id="editProfileDropdownBtn">👤 Edit Profile</button>
+                    <button class="dropdown-item" id="logoutBtn">🚪 Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <form class="modal-content" id="loginForm" autocomplete="off">
+            <button type="button" class="close-btn" id="closeModal">×</button>
+            <h2 style="margin-bottom:1.2rem;">Sign In to MyExtraToYou</h2>
+            <div style="display:flex;flex-direction:column;gap:0.7rem;">
+                <label for="name"><span style="font-size:1.1rem;">👤 Name:</span></label>
+                <input type="text" id="name" name="name" required placeholder="Enter your name">
+                <label for="state"><span style="font-size:1.1rem;">🌏 State:</span></label>
+                <input type="text" id="state" name="state" required placeholder="State">
+                <label for="district"><span style="font-size:1.1rem;">🏢 District:</span></label>
+                <input type="text" id="district" name="district" required placeholder="District">
+                <label for="mobile"><span style="font-size:1.1rem;">📱 Mobile No:</span></label>
+                <input type="tel" id="mobile" name="mobile" pattern="[0-9]{10}" required placeholder="10-digit mobile number">
+                <label for="email"><span style="font-size:1.1rem;">✉️ Email ID:</span></label>
+                <input type="email" id="email" name="email" required placeholder="Email address">
+                <label for="password"><span style="font-size:1.1rem;">🔒 Password:</span></label>
+                <input type="password" id="password" name="password" required placeholder="Password">
+                <div class="captcha-row" style="margin-top:0.7rem;">
+                    <span id="captchaQuestion" style="font-size:1.1rem;font-weight:600;"></span>
+                    <input type="text" id="captchaAnswer" name="captchaAnswer" required placeholder="Answer">
+                </div>
+                <div id="loginError" class="error-message hidden"></div>
+            </div>
+            <div class="modal-actions" style="margin-top:2rem;">
+                <button type="submit" style="background:var(--accent);color:#fff;">Login</button>
+                <button type="button" id="cancelModal" style="background:var(--button-bg);color:var(--button-text);">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal" id="editProfileModal">
+        <form class="modal-content" id="editProfileForm" autocomplete="off">
+            <button type="button" class="close-btn" id="closeEditModal">×</button>
+            <h2 style="margin-bottom:1.2rem;">Edit Profile</h2>
+            <div style="display:flex;flex-direction:column;gap:0.7rem;">
+                <label for="editName">👤 Name:</label>
+                <input type="text" id="editName" name="editName" required>
+                <label for="editState">🌏 State:</label>
+                <input type="text" id="editState" name="editState" required>
+                <label for="editDistrict">🏢 District:</label>
+                <input type="text" id="editDistrict" name="editDistrict" required>
+                <label for="editMobile">📱 Mobile No:</label>
+                <input type="tel" id="editMobile" name="editMobile" pattern="[0-9]{10}" required>
+                <label for="editEmail">✉️ Email ID:</label>
+                <input type="email" id="editEmail" name="editEmail" required>
+                <div id="editProfileError" class="error-message hidden"></div>
+                <div id="editProfileSuccess" class="success-message hidden"></div>
+            </div>
+            <div class="modal-actions" style="margin-top:2rem;">
+                <button type="submit" style="background:var(--accent);color:#fff;">Save</button>
+                <button type="button" id="cancelEditModal" style="background:var(--button-bg);color:var(--button-text);">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Welcome Screen -->
+    <div class="welcome-screen" id="welcomeScreen">
+        <div class="welcome-content">
+            <h2 id="welcomeMsg">Welcome!</h2>
+            <p>Login successful. Enjoy your personalized experience.</p>
+            <button style="background:var(--accent);color:#fff;padding:0.5rem 1.2rem;border-radius:8px;border:none;font-weight:600;cursor:pointer;" id="continueBtn">Continue</button>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal" id="feedbackModal">
+        <form class="modal-content" id="feedbackForm" autocomplete="off">
+            <button type="button" class="close-btn" id="closeFeedbackModal">×</button>
+            <h2 style="margin-bottom:1.2rem;">Why are you rejecting this product?</h2>
+            <div style="display:flex;flex-direction:column;gap:0.7rem;">
+                <label for="feedbackReason">📝 Reason for rejection:</label>
+                <select id="feedbackReason" name="feedbackReason" required style="padding: 0.7rem; border: 2px solid var(--border-color); border-radius: 8px; background: var(--primary-bg); color: var(--primary-text);">
+                    <option value="">Select a reason</option>
+                    <option value="poor-condition">Poor condition of the book</option>
+                    <option value="wrong-description">Description doesn't match the book</option>
+                    <option value="overpriced">Overpriced</option>
+                    <option value="unavailable">Book not available</option>
+                    <option value="seller-unresponsive">Seller not responding</option>
+                    <option value="other">Other</option>
+                </select>
+                <label for="feedbackDetails">💬 Additional details (optional):</label>
+                <textarea id="feedbackDetails" name="feedbackDetails" rows="4" placeholder="Provide more details about the issue..." style="padding: 0.7rem; border: 2px solid var(--border-color); border-radius: 8px; background: var(--primary-bg); color: var(--primary-text); resize: vertical;"></textarea>
+                <div id="feedbackError" class="error-message hidden"></div>
+            </div>
+            <div class="modal-actions" style="margin-top:2rem;">
+                <button type="submit" style="background:var(--accent);color:#fff;">Submit Feedback</button>
+                <button type="button" id="cancelFeedbackModal" style="background:var(--button-bg);color:var(--button-text);">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Add Product Modal -->
+    <div class="modal" id="addProductModal">
+        <form class="modal-content" id="addProductForm" autocomplete="off" enctype="multipart/form-data">
+            <button type="button" class="close-btn" id="closeProductModal">×</button>
+            <h2 style="margin-bottom:1.2rem;">Add Product</h2>
+            <div style="display:flex;flex-direction:column;gap:0.7rem;">
+                <label for="productName">📚 Name of the Book:</label>
+                <input type="text" id="productName" name="productName" required placeholder="Book name">
+                <label for="productLang">🌐 Language:</label>
+                <input type="text" id="productLang" name="productLang" required placeholder="Language">
+                <label for="productTopic">📖 Topic/Subject:</label>
+                <input type="text" id="productTopic" name="productTopic" required placeholder="Topic/Subject">
+                <label for="productImages">🖼️ Images (optional):</label>
+                <input type="file" id="productImages" name="productImages" accept="image/*" multiple>
+                <label for="productPrice">💸 Price (Max ₹400):</label>
+                <input type="number" id="productPrice" name="productPrice" min="0" max="400" required placeholder="Price">
+                <label>⭐ Quality of Book:</label>
+                <div id="starRating" class="star-rating">
+                    <span class="star" data-rating="1">⭐</span>
+                    <span class="star" data-rating="2">⭐</span>
+                    <span class="star" data-rating="3">⭐</span>
+                    <span class="star" data-rating="4">⭐</span>
+                    <span class="star" data-rating="5">⭐</span>
+                </div>
+                <label for="productPlace">📍 Place where you can provide the product:</label>
+                <input type="text" id="productPlace" name="productPlace" required placeholder="Pickup location">
+                <div id="productError" class="error-message hidden"></div>
+                <div id="productSuccess" class="success-message hidden"></div>
+            </div>
+            <div class="modal-actions" style="margin-top:2rem;">
+                <button type="submit" style="background:var(--accent);color:#fff;">Add Product</button>
+                <button type="button" id="cancelProductModal" style="background:var(--button-bg);color:var(--button-text);">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- CHECK FOR GOODS SECTION -->
+    <div class="section" id="section-goods">
+        <div class="main-title">Available Goods</div>
+        <div class="description" id="goodsList">
+            <div class="goods-grid" id="goodsGrid">
+                <!-- Goods will be listed here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Help Button -->
+    <button class="help-button" id="helpButton" title="Need Help?">?</button>
+
+    <!-- Help Modal -->
+    <div class="modal" id="helpModal">
+        <div class="help-modal">
+            <div class="help-content">
+                <button type="button" class="close-btn" id="closeHelpModal">×</button>
+                <h2>🆘 How can we help you?</h2>
+                
+                <div class="help-options" id="helpOptions">
+                    <div class="help-option" data-problem="login">
+                        <div class="help-icon">🔐</div>
+                        <div class="help-text">
+                            <h4>Login Issues</h4>
+                            <p>Can't sign in or create account</p>
+                        </div>
+                    </div>
+                    
+                    <div class="help-option" data-problem="upload">
+                        <div class="help-icon">📤</div>
+                        <div class="help-text">
+                            <h4>Product Upload Problems</h4>
+                            <p>Issues adding books or uploading images</p>
+                        </div>
+                    </div>
+                    
+                    <div class="help-option" data-problem="purchase">
+                        <div class="help-icon">💳</div>
+                        <div class="help-text">
+                            <h4>Purchase & Transaction Issues</h4>
+                            <p>Problems with buying or selling books</p>
+                        </div>
+                    </div>
+                    
+                    <div class="help-option" data-problem="technical">
+                        <div class="help-icon">🔧</div>
+                        <div class="help-text">
+                            <h4>Technical Problems</h4>
+                            <p>Website not working properly or errors</p>
+                        </div>
+                    </div>
+                    
+                    <div class="help-option" data-problem="account">
+                        <div class="help-icon">👤</div>
+                        <div class="help-text">
+                            <h4>Account & Profile Issues</h4>
+                            <p>Problems with profile settings or stars</p>
+                        </div>
+                    </div>
+                    
+                    <div class="help-option" data-problem="other">
+                        <div class="help-icon">💬</div>
+                        <div class="help-text">
+                            <h4>Other Issues</h4>
+                            <p>Something else not listed above</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="custom-problem" id="customProblemSection">
+                    <label for="customProblemText" style="font-weight: 600; color: var(--primary-text); margin-bottom: 0.5rem; display: block;">
+                        📝 Describe your problem:
+                    </label>
+                    <textarea 
+                        id="customProblemText" 
+                        placeholder="Please describe your issue in detail..."
+                        rows="4"
+                        style="width: 100%; padding: 0.7rem; border: 2px solid var(--border-color); border-radius: 8px; background: var(--primary-bg); color: var(--primary-text); resize: vertical; font-family: inherit;"
+                    ></textarea>
+                </div>
+                
+                <div class="modal-actions" style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center;">
+                    <button id="submitHelpRequest" style="background: var(--accent); color: #fff; padding: 0.7rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        Send Help Request
+                    </button>
+                    <button id="cancelHelpModal" style="background: var(--button-bg); color: var(--button-text); padding: 0.7rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                        Cancel
+                    </button>
+                </div>
+                
+                <div id="helpSuccess" class="success-message hidden" style="margin-top: 1rem; text-align: center;"></div>
+                <div id="helpError" class="error-message hidden" style="margin-top: 1rem; text-align: center;"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content" id="mainContent">
+        <div class="section active" id="section-home">
+            <div class="main-title">Welcome to MyExtraToYou</div>
+            <div class="subtitle">Connecting those who have with those who need</div>
+            <div class="topic">BooksForAll</div>
+            <div class="description">
+                <b>MyExtraToYou</b> is a platform designed to bridge the gap between people who have extra items and those who need them. Whether it's students in need of guides, alumni with old but useful books, or anyone with surplus items, our goal is to reduce waste and help those in need.<br><br>
+                <b>BooksForAll</b> is our main focus, making it easy for students to find and share educational resources. Instead of letting valuable books and materials go unused or thrown away, you can give them a new life by connecting with someone who needs them.<br><br>
+                Join us in building a community where sharing is caring, and every extra can make a difference!
+            </div>
+        </div>
+        <div class="section" id="section-about">
+            <div class="main-title">About Us</div>
+            <div class="subtitle">Our Mission & Vision</div>
+            <div class="description">
+                We are a group of passionate students and alumni who believe in the power of sharing. Our mission is to connect people who have extra resources with those who need them, reducing waste and supporting education for all.<br><br>
+                <b>Why MyExtraToYou?</b><br>
+                Every year, countless useful items are discarded. We want to give these items a new life and help those who can benefit from them the most.<br><br>
+                <b>Our Vision:</b> A world where no resource goes unused and everyone has access to what they need.
+            </div>
+        </div>
+        <div class="section" id="section-credits">
+            <div class="main-title">Credits</div>
+            <div class="subtitle">Meet the Team</div>
+            <div class="description">
+                <b>MyExtraToYou</b> is brought to you by:<br><br>
+                <ul style="text-align:left; max-width:350px; margin:0 auto; color:var(--primary-text);">
+                    <li><b>Krunal Patil</b> - Concept & Development</li>
+                    <li><b>Abhiram Panicker</b> - UI Design</li>
+                </ul>
+                <br>
+                Special thanks to all those who made this possible!
+            </div>
+        </div>
+        <div class="section" id="section-donate">
+            <div class="main-title">Donate</div>
+            <div class="description">
+                <button id="addProductBtn" style="background:var(--accent);color:#fff;padding:0.5rem 1.2rem;border-radius:8px;border:none;font-weight:600;cursor:pointer;margin-bottom:1.2rem;">Add Product</button>
+                <div id="donatedProductsList">
+                    <div class="goods-grid" id="donatedProductsGrid">
+                        <!-- Donated products will be listed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state management
+        let currentUser = null;
+        let currentSection = 'home';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let selectedRating = 0;
+        let captchaAnswer = 0;
+        let currentProductForFeedback = null;
+
+        // DOM elements
+        const elements = {
+            loginBtn: document.getElementById('loginBtn'),
+            loginModal: document.getElementById('loginModal'),
+            loginForm: document.getElementById('loginForm'),
+            closeModal: document.getElementById('closeModal'),
+            cancelModal: document.getElementById('cancelModal'),
+            welcomeScreen: document.getElementById('welcomeScreen'),
+            continueBtn: document.getElementById('continueBtn'),
+            welcomeMsg: document.getElementById('welcomeMsg'),
+            userProfile: document.getElementById('userProfile'),
+            userInfo: document.getElementById('userInfo'),
+            userAvatar: document.getElementById('userAvatar'),
+            userName: document.getElementById('userName'),
+            userStars: document.getElementById('userStars'),
+            dropdownArrow: document.getElementById('dropdownArrow'),
+            userDropdown: document.getElementById('userDropdown'),
+            editProfileDropdownBtn: document.getElementById('editProfileDropdownBtn'),
+            editProfileModal: document.getElementById('editProfileModal'),
+            editProfileForm: document.getElementById('editProfileForm'),
+            closeEditModal: document.getElementById('closeEditModal'),
+            cancelEditModal: document.getElementById('cancelEditModal'),
+            logoutBtn: document.getElementById('logoutBtn'),
+            addProductBtn: document.getElementById('addProductBtn'),
+            addProductModal: document.getElementById('addProductModal'),
+            addProductForm: document.getElementById('addProductForm'),
+            closeProductModal: document.getElementById('closeProductModal'),
+            cancelProductModal: document.getElementById('cancelProductModal'),
+            feedbackModal: document.getElementById('feedbackModal'),
+            feedbackForm: document.getElementById('feedbackForm'),
+            closeFeedbackModal: document.getElementById('closeFeedbackModal'),
+            cancelFeedbackModal: document.getElementById('cancelFeedbackModal'),
+            helpButton: document.getElementById('helpButton'),
+            helpModal: document.getElementById('helpModal'),
+            closeHelpModal: document.getElementById('closeHelpModal'),
+            cancelHelpModal: document.getElementById('cancelHelpModal'),
+            submitHelpRequest: document.getElementById('submitHelpRequest'),
+            helpOptions: document.getElementById('helpOptions'),
+            customProblemSection: document.getElementById('customProblemSection'),
+            customProblemText: document.getElementById('customProblemText'),
+            toggleModeBtn: document.getElementById('toggleModeBtn'),
+            themeIcon: document.getElementById('themeIcon'),
+            captchaQuestion: document.getElementById('captchaQuestion'),
+            captchaAnswer: document.getElementById('captchaAnswer'),
+            starRating: document.getElementById('starRating'),
+            goodsGrid: document.getElementById('goodsGrid'),
+            donatedProductsGrid: document.getElementById('donatedProductsGrid'),
+            mainContent: document.getElementById('mainContent'),
+            sectionGoods: document.getElementById('section-goods')
+        };
+
+        // Initialize the application
+        function init() {
+            // Set initial theme
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            updateThemeIcon();
+
+            // Hide help button initially (show only after login)
+            elements.helpButton.style.display = 'none';
+
+            // Check if user is logged in
+            const storedUser = localStorage.getItem('currentUser');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+                showUserProfile();
+            }
+
+            // Generate initial captcha
+            generateCaptcha();
+
+            // Bind all event listeners
+            bindEventListeners();
+
+            // Load products
+            loadProducts();
+
+            // Initialize user stars if not present
+            if (currentUser && !currentUser.hasOwnProperty('stars')) {
+                currentUser.stars = 0;
+                currentUser.rejections = 0;
+                currentUser.banned = false;
+                saveCurrentUser();
+            }
+        }
+
+        // Email simulation system
+        function sendEmail(to, cc, subject, body) {
+            const email = {
+                id: Date.now().toString(),
+                to: to,
+                cc: cc,
+                subject: subject,
+                body: body,
+                timestamp: new Date().toISOString(),
+                sent: true
+            };
+
+            // Store email in localStorage (simulating email sending)
+            let emails = JSON.parse(localStorage.getItem('emails')) || [];
+            emails.push(email);
+            localStorage.setItem('emails', JSON.stringify(emails));
+
+            // Show notification to user
+            showNotification(`📧 Email sent to ${to}${cc ? ` (cc: ${cc})` : ''}`, 'success');
+            
+            // Log email for debugging
+            console.log('Email sent:', email);
+            
+            return email;
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#27ae60' : type === 'error' ? '#e74c3c' : '#3498db'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 10000;
+                font-weight: 600;
+                max-width: 300px;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+
+        // Add CSS animation for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Event listeners
+        function bindEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    if (e.target.dataset.section) {
+                        switchSection(e.target.dataset.section);
+                    }
+                });
+            });
+
+            // Theme toggle
+            elements.toggleModeBtn.addEventListener('click', toggleTheme);
+
+            // Login modal
+            elements.loginBtn.addEventListener('click', openLoginModal);
+            elements.closeModal.addEventListener('click', closeLoginModal);
+            elements.cancelModal.addEventListener('click', closeLoginModal);
+            elements.loginModal.addEventListener('click', (e) => {
+                if (e.target === elements.loginModal) closeLoginModal();
+            });
+            elements.loginForm.addEventListener('submit', handleLogin);
+
+            // Welcome screen
+            elements.continueBtn.addEventListener('click', closeWelcomeScreen);
+
+            // User profile dropdown
+            elements.userInfo.addEventListener('click', toggleUserDropdown);
+            
+            // Dropdown item handlers
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    closeUserDropdown();
+                    
+                    if (e.target.dataset.section) {
+                        switchSection(e.target.dataset.section);
+                    } else if (e.target.id === 'editProfileDropdownBtn') {
+                        openEditProfileModal();
+                    } else if (e.target.id === 'logoutBtn') {
+                        handleLogout();
+                    }
+                });
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!elements.userProfile.contains(e.target)) {
+                    closeUserDropdown();
+                }
+            });
+
+            // Edit profile modal
+            elements.closeEditModal.addEventListener('click', closeEditProfileModal);
+            elements.cancelEditModal.addEventListener('click', closeEditProfileModal);
+            elements.editProfileModal.addEventListener('click', (e) => {
+                if (e.target === elements.editProfileModal) closeEditProfileModal();
+            });
+            elements.editProfileForm.addEventListener('submit', handleEditProfile);
+
+            // Add product modal
+            elements.addProductBtn.addEventListener('click', openAddProductModal);
+            elements.closeProductModal.addEventListener('click', closeAddProductModal);
+            elements.cancelProductModal.addEventListener('click', closeAddProductModal);
+            elements.addProductModal.addEventListener('click', (e) => {
+                if (e.target === elements.addProductModal) closeAddProductModal();
+            });
+            elements.addProductForm.addEventListener('submit', handleAddProduct);
+
+            // Feedback modal
+            elements.closeFeedbackModal.addEventListener('click', closeFeedbackModal);
+            elements.cancelFeedbackModal.addEventListener('click', closeFeedbackModal);
+            elements.feedbackModal.addEventListener('click', (e) => {
+                if (e.target === elements.feedbackModal) closeFeedbackModal();
+            });
+            elements.feedbackForm.addEventListener('submit', handleFeedbackSubmit);
+
+            // Help system
+            elements.helpButton.addEventListener('click', openHelpModal);
+            elements.closeHelpModal.addEventListener('click', closeHelpModal);
+            elements.cancelHelpModal.addEventListener('click', closeHelpModal);
+            elements.helpModal.addEventListener('click', (e) => {
+                if (e.target === elements.helpModal) closeHelpModal();
+            });
+            elements.submitHelpRequest.addEventListener('click', handleHelpSubmit);
+
+            // Help options selection
+            elements.helpOptions.addEventListener('click', (e) => {
+                const option = e.target.closest('.help-option');
+                if (option) {
+                    document.querySelectorAll('.help-option').forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    
+                    if (option.dataset.problem === 'other') {
+                        elements.customProblemSection.classList.add('active');
+                    } else {
+                        elements.customProblemSection.classList.remove('active');
+                    }
+                }
+            });
+
+            // Star rating
+            elements.starRating.querySelectorAll('.star').forEach(star => {
+                star.addEventListener('click', (e) => {
+                    setStarRating(parseInt(e.target.dataset.rating));
+                });
+                star.addEventListener('mouseover', (e) => {
+                    highlightStars(parseInt(e.target.dataset.rating));
+                });
+            });
+
+            elements.starRating.addEventListener('mouseleave', () => {
+                highlightStars(selectedRating);
+            });
+        }
+
+        // Theme management
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('theme', currentTheme);
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const iconPath = currentTheme === 'light' ? 
+                'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z' : 
+                'M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42';
+            
+            elements.themeIcon.innerHTML = currentTheme === 'light' ? 
+                '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>' :
+                '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+        }
+
+        // Navigation
+        function switchSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show selected section
+            if (sectionName === 'goods') {
+                elements.sectionGoods.classList.add('active');
+                elements.mainContent.style.display = 'none';
+            } else {
+                elements.mainContent.style.display = 'block';
+                document.getElementById(`section-${sectionName}`).classList.add('active');
+            }
+
+            // Update navigation buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+
+            currentSection = sectionName;
+        }
+
+        // Captcha generation
+        function generateCaptcha() {
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            captchaAnswer = num1 + num2;
+            elements.captchaQuestion.textContent = `${num1} + ${num2} = ?`;
+        }
+
+        // Login modal management
+        function openLoginModal() {
+            elements.loginModal.classList.add('active');
+            generateCaptcha();
+        }
+
+        function closeLoginModal() {
+            elements.loginModal.classList.remove('active');
+            elements.loginForm.reset();
+            hideError('loginError');
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            hideError('loginError');
+
+            const formData = new FormData(e.target);
+            const userData = {
+                name: formData.get('name'),
+                state: formData.get('state'),
+                district: formData.get('district'),
+                mobile: formData.get('mobile'),
+                email: formData.get('email'),
+                password: formData.get('password')
+            };
+
+            const userCaptchaAnswer = parseInt(formData.get('captchaAnswer'));
+
+            // Validate captcha
+            if (userCaptchaAnswer !== captchaAnswer) {
+                showError('loginError', 'Incorrect captcha answer. Please try again.');
+                generateCaptcha();
+                return;
+            }
+
+            try {
+                // First check if user exists with login action
+                const loginResponse = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ...userData,
+                        action: 'login'
+                    })
+                });
+
+                const loginResult = await loginResponse.json();
+
+                if (loginResult.success && loginResult.message === 'Login successful') {
+                    currentUser = loginResult.user;
+                } else if (loginResult.success && loginResult.message === 'Registration successful') {
+                    currentUser = loginResult.user;
+                } else {
+                    // Try registration if login failed
+                    const registerResponse = await fetch('/api/users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            ...userData,
+                            action: 'register'
+                        })
+                    });
+
+                    const registerResult = await registerResponse.json();
+
+                    if (registerResult.success) {
+                        currentUser = registerResult.user;
+                    } else {
+                        showError('loginError', registerResult.message || 'Login failed. Please try again.');
+                        return;
+                    }
+                }
+
+                // Save login state
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                closeLoginModal();
+                showWelcomeScreen();
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('loginError', 'Login failed. Please check your connection and try again.');
+            }
+        }
+
+        // Welcome screen
+        function showWelcomeScreen() {
+            elements.welcomeMsg.textContent = `Welcome, ${currentUser.name}!`;
+            elements.welcomeScreen.classList.add('active');
+        }
+
+        function closeWelcomeScreen() {
+            elements.welcomeScreen.classList.remove('active');
+            showUserProfile();
+        }
+
+        // User profile management
+        function showUserProfile() {
+            elements.loginBtn.style.display = 'none';
+            elements.userProfile.classList.add('active');
+            elements.userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+            elements.userName.textContent = currentUser.name;
+            elements.userStars.textContent = currentUser.stars || 0;
+            
+            // Show help button when logged in
+            elements.helpButton.style.display = 'flex';
+        }
+
+        function hideUserProfile() {
+            elements.loginBtn.style.display = 'block';
+            elements.userProfile.classList.remove('active');
+            elements.userDropdown.classList.remove('active');
+            
+            // Hide help button when logged out
+            elements.helpButton.style.display = 'none';
+        }
+
+        function toggleUserDropdown() {
+            elements.userDropdown.classList.toggle('active');
+            elements.dropdownArrow.textContent = elements.userDropdown.classList.contains('active') ? '▲' : '▼';
+        }
+
+        function closeUserDropdown() {
+            elements.userDropdown.classList.remove('active');
+            elements.dropdownArrow.textContent = '▼';
+        }
+
+        async function saveCurrentUser() {
+            if (currentUser) {
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                
+                try {
+                    // Update user in database
+                    await fetch('/api/users', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(currentUser)
+                    });
+                    
+                    // Update stars display if visible
+                    if (elements.userStars) {
+                        elements.userStars.textContent = currentUser.stars || 0;
+                    }
+                } catch (error) {
+                    console.error('Error updating user:', error);
+                }
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            hideUserProfile();
+            switchSection('home');
+        }
+
+        // Transaction and rating system
+        async function handleBuyProduct(productId, sellerId) {
+            if (!currentUser) return;
+
+            try {
+                // Create transaction via API
+                const response = await fetch('/api/transactions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        productId: productId,
+                        sellerId: sellerId,
+                        buyerId: currentUser.id,
+                        action: 'buy'
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    loadProducts();
+                    showNotification('Purchase request sent! Seller has been notified.', 'success');
+                } else {
+                    showNotification('Failed to process purchase request.', 'error');
+                }
+            } catch (error) {
+                console.error('Error processing purchase:', error);
+                showNotification('Failed to process purchase request.', 'error');
+            }
+        }
+
+        function handleRejectProduct(productId, sellerId) {
+            currentProductForFeedback = { productId, sellerId };
+            elements.feedbackModal.classList.add('active');
+        }
+
+        async function handleFeedbackSubmit(e) {
+            e.preventDefault();
+            
+            if (!currentProductForFeedback) return;
+            
+            const formData = new FormData(e.target);
+            const reason = formData.get('feedbackReason');
+            const details = formData.get('feedbackDetails') || 'No additional details provided';
+            
+            if (!reason) {
+                showError('feedbackError', 'Please select a reason for rejection.');
+                return;
+            }
+
+            try {
+                // Submit rejection via API
+                const response = await fetch('/api/transactions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        productId: currentProductForFeedback.productId,
+                        sellerId: currentProductForFeedback.sellerId,
+                        buyerId: currentUser.id,
+                        reason: reason,
+                        details: details,
+                        action: 'reject'
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    closeFeedbackModal();
+                    loadProducts();
+                    
+                    const message = result.sellerBanned ? 
+                        'Feedback submitted. Seller has been temporarily banned due to multiple rejections.' :
+                        'Feedback submitted successfully.';
+                    showNotification(message, 'success');
+                } else {
+                    showError('feedbackError', result.message || 'Failed to submit feedback.');
+                }
+            } catch (error) {
+                console.error('Error submitting feedback:', error);
+                showError('feedbackError', 'Failed to submit feedback. Please try again.');
+            }
+        }
+
+        function saveUserToStorage(user) {
+            const userIndex = users.findIndex(u => u.id === user.id);
+            if (userIndex !== -1) {
+                users[userIndex] = user;
+                localStorage.setItem('users', JSON.stringify(users));
+            }
+            
+            // Update current user if it's the same user
+            if (currentUser && currentUser.id === user.id) {
+                currentUser = user;
+                saveCurrentUser();
+            }
+        }
+
+        // Edit profile modal
+        function openEditProfileModal() {
+            if (!currentUser) return;
+
+            document.getElementById('editName').value = currentUser.name;
+            document.getElementById('editState').value = currentUser.state;
+            document.getElementById('editDistrict').value = currentUser.district;
+            document.getElementById('editMobile').value = currentUser.mobile;
+            document.getElementById('editEmail').value = currentUser.email;
+
+            elements.editProfileModal.classList.add('active');
+            elements.userDropdown.classList.remove('active');
+        }
+
+        function closeEditProfileModal() {
+            elements.editProfileModal.classList.remove('active');
+            elements.editProfileForm.reset();
+            hideError('editProfileError');
+            hideSuccess('editProfileSuccess');
+        }
+
+        async function handleEditProfile(e) {
+            e.preventDefault();
+            hideError('editProfileError');
+            hideSuccess('editProfileSuccess');
+
+            const formData = new FormData(e.target);
+            const updatedData = {
+                name: formData.get('editName'),
+                state: formData.get('editState'),
+                district: formData.get('editDistrict'),
+                mobile: formData.get('editMobile'),
+                email: formData.get('editEmail')
+            };
+
+            // Update current user
+            Object.assign(currentUser, updatedData);
+
+            try {
+                // Update user via API
+                const response = await fetch('/api/users', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(currentUser)
+                });
+
+                if (response.ok) {
+                    // Update stored current user
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+                    // Update avatar
+                    elements.userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
+                    elements.userName.textContent = currentUser.name;
+
+                    showSuccess('editProfileSuccess', 'Profile updated successfully!');
+                    setTimeout(closeEditProfileModal, 2000);
+                } else {
+                    showError('editProfileError', 'Failed to update profile. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showError('editProfileError', 'Failed to update profile. Please try again.');
+            }
+        }
+
+        // Add product modal
+        function openAddProductModal() {
+            if (!currentUser) {
+                alert('Please login first to add products.');
+                return;
+            }
+            elements.addProductModal.classList.add('active');
+            selectedRating = 0;
+            highlightStars(0);
+        }
+
+        function closeAddProductModal() {
+            elements.addProductModal.classList.remove('active');
+            elements.addProductForm.reset();
+            selectedRating = 0;
+            highlightStars(0);
+            hideError('productError');
+            hideSuccess('productSuccess');
+        }
+
+        function setStarRating(rating) {
+            selectedRating = rating;
+            highlightStars(rating);
+        }
+
+        function highlightStars(rating) {
+            elements.starRating.querySelectorAll('.star').forEach((star, index) => {
+                if (index < rating) {
+                    star.classList.add('filled');
+                } else {
+                    star.classList.remove('filled');
+                }
+            });
+        }
+
+        async function handleAddProduct(e) {
+            e.preventDefault();
+            hideError('productError');
+            hideSuccess('productSuccess');
+
+            const formData = new FormData(e.target);
+            const files = formData.getAll('productImages') || [];
+
+            if (selectedRating === 0) {
+                showError('productError', 'Please select a quality rating.');
+                return;
+            }
+
+            // Process images if any are uploaded
+            let images = [];
+            if (files.length > 0) {
+                images = files.map((file, index) => ({
+                    name: file.name,
+                    url: URL.createObjectURL(file) // This creates a local URL for demo
+                }));
+            } else {
+                // Use placeholder if no images uploaded
+                images = [
+                    { name: 'placeholder.jpg', url: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDMwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjZjBmMGYwIi8+CjxjaXJjbGUgY3g9IjE1MCIgY3k9IjEwMCIgcj0iNDAiIGZpbGw9IiNkZGQiLz4KPHRleHQgeD0iMTUwIiB5PSIxMzAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+Qm9vayBQaG90bzwvdGV4dD4KPC9zdmc+' }
+                ];
+            }
+
+            // Send to backend API
+            try {
+                const response = await fetch('/api/products', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: formData.get('productName'),
+                        language: formData.get('productLang'),
+                        topic: formData.get('productTopic'),
+                        price: parseInt(formData.get('productPrice')),
+                        rating: selectedRating,
+                        place: formData.get('productPlace'),
+                        images: images,
+                        sellerId: currentUser.id
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showSuccess('productSuccess', 'Product added successfully!');
+                    setTimeout(() => {
+                        closeAddProductModal();
+                        loadProducts();
+                    }, 2000);
+                } else {
+                    showError('productError', result.error || 'Failed to add product.');
+                }
+            } catch (error) {
+                console.error('Product creation error:', error);
+                showError('productError', 'Failed to add product. Please try again.');
+            }
+        }
+
+        // Product management
+        function loadProducts() {
+            loadAllGoods();
+            loadUserProducts();
+        }
+
+        async function loadAllGoods() {
+            try {
+                const response = await fetch('/api/products');
+                const result = await response.json();
+
+                if (!result.success) {
+                    elements.goodsGrid.innerHTML = '<p style="text-align: center; color: var(--secondary-text);">Error loading products.</p>';
+                    return;
+                }
+
+                // Filter products: exclude banned sellers and current user's own products
+                const availableProducts = result.products.filter(product => {
+                    const seller = product.seller;
+                    // Hide banned users' products
+                    if (seller.banned) return false;
+                    // Hide current user's own products from the goods section
+                    if (currentUser && seller.id === parseInt(currentUser.id)) return false;
+                    return true;
+                });
+
+                if (availableProducts.length === 0) {
+                    elements.goodsGrid.innerHTML = '<p style="text-align: center; color: var(--secondary-text);">No products available yet.</p>';
+                    return;
+                }
+
+                elements.goodsGrid.innerHTML = availableProducts.map(product => {
+                    const seller = product.seller;
+                    const isPurchased = product.status === 'purchased';
+                    const isRejected = product.status === 'rejected';
+                    
+                    return `
+                <div class="product-card ${seller.banned ? 'banned-user' : ''}">
+                    ${seller.banned ? '<div class="banned-badge">BANNED</div>' : ''}
+                    <div class="product-images">
+                        ${product.images.slice(0, 3).map(img => `
+                            <img src="${img.url}" alt="${product.name}" class="product-image">
+                        `).join('')}
+                    </div>
+                    <div class="product-info">
+                        <h3>${product.name}</h3>
+                        <p><strong>Language:</strong> ${product.language}</p>
+                        <p><strong>Topic:</strong> ${product.topic}</p>
+                        <p><strong>Location:</strong> ${product.place}</p>
+                        
+                        <div class="seller-info">
+                            <p><strong>Seller:</strong> ${seller.name}</p>
+                            <p><strong>Rating:</strong> ⭐ ${seller.stars || 0} stars</p>
+                            <p><strong>Contact:</strong> ${seller.mobile}</p>
+                            <p style="font-size: 0.8rem; color: var(--secondary-text);">
+                                ${seller.email}
+                            </p>
+                        </div>
+                        
+                        <div class="star-rating">
+                            <strong>Book Quality:</strong>
+                            ${Array.from({length: 5}, (_, i) => `
+                                <span class="star ${i < product.rating ? 'filled' : ''}">${i < product.rating ? '⭐' : '☆'}</span>
+                            `).join('')}
+                        </div>
+                        <p class="product-price">₹${product.price}</p>
+                        
+                        ${currentUser && !seller.banned ? `
+                            <div class="product-actions">
+                                ${isPurchased ? 
+                                    `<button class="reject-btn" onclick="handleRejectProduct('${product.id}', '${seller.id}')">REJECT</button>` :
+                                    isRejected ? 
+                                        '<p style="color: #e74c3c; text-align: center;">Product Rejected</p>' :
+                                        `<button class="buy-btn" onclick="handleBuyProduct('${product.id}', '${seller.id}')">BUY NOW</button>`
+                                }
+                            </div>
+                        ` : ''}
+                        
+                        ${!currentUser ? '<p style="text-align: center; color: var(--secondary-text); margin-top: 1rem;">Login to purchase</p>' : ''}
+                    </div>
+                </div>
+            `;
+            }).join('');
+            } catch (error) {
+                console.error('Load products error:', error);
+                elements.goodsGrid.innerHTML = '<p style="text-align: center; color: var(--secondary-text);">Error loading products. Please refresh the page.</p>';
+            }
+        }
+
+        // Feedback modal management
+        function closeFeedbackModal() {
+            elements.feedbackModal.classList.remove('active');
+            elements.feedbackForm.reset();
+            hideError('feedbackError');
+            currentProductForFeedback = null;
+        }
+
+        // Help system functions
+        function openHelpModal() {
+            elements.helpModal.classList.add('active');
+            // Reset selections
+            document.querySelectorAll('.help-option').forEach(opt => opt.classList.remove('selected'));
+            elements.customProblemSection.classList.remove('active');
+            elements.customProblemText.value = '';
+            hideError('helpError');
+            hideSuccess('helpSuccess');
+        }
+
+        function closeHelpModal() {
+            elements.helpModal.classList.remove('active');
+            document.querySelectorAll('.help-option').forEach(opt => opt.classList.remove('selected'));
+            elements.customProblemSection.classList.remove('active');
+            elements.customProblemText.value = '';
+            hideError('helpError');
+            hideSuccess('helpSuccess');
+        }
+
+        function handleHelpSubmit() {
+            const selectedOption = document.querySelector('.help-option.selected');
+            
+            if (!selectedOption) {
+                showError('helpError', 'Please select a problem type.');
+                return;
+            }
+
+            const problemType = selectedOption.dataset.problem;
+            const problemTitle = selectedOption.querySelector('h4').textContent;
+            let problemDetails = '';
+
+            if (problemType === 'other') {
+                problemDetails = elements.customProblemText.value.trim();
+                if (!problemDetails) {
+                    showError('helpError', 'Please describe your problem.');
+                    return;
+                }
+            } else {
+                // Pre-defined solutions for common problems
+                const solutions = {
+                    'login': 'Having trouble logging in? Try refreshing the page and clearing your browser cache. Make sure you\'re entering the correct email and password. If you forgot your password, you can contact support.',
+                    'upload': 'For product upload issues, make sure all required fields are filled. Images are optional - you can add books without photos if needed.',
+                    'purchase': 'If you\'re having trouble with transactions, check that you\'re logged in and the seller hasn\'t been banned. Contact information will be sent via email after clicking "BUY NOW".',
+                    'technical': 'For technical issues, try refreshing the page, clearing browser cache, or switching to a different browser. Ensure JavaScript is enabled.',
+                    'account': 'Account issues can include profile updates not saving or star ratings not displaying. Try logging out and back in, or contact support if the problem persists.'
+                };
+
+                if (solutions[problemType]) {
+                    showSuccess('helpSuccess', `Solution: ${solutions[problemType]}`);
+                    return;
+                }
+            }
+
+            // Send email for "other" problems or when solutions don't work
+            const userInfo = currentUser ? 
+                `User: ${currentUser.name} (${currentUser.email})` : 
+                'User: Not logged in';
+
+            sendEmail(
+                'abhirampanicker@gmail.com',
+                null,
+                `Help Request - ${problemTitle} - MyExtraToYou`,
+                `New help request received:
+
+Problem Type: ${problemTitle}
+${problemDetails ? `Details: ${problemDetails}` : ''}
+
+${userInfo}
+Browser: ${navigator.userAgent}
+Time: ${new Date().toLocaleString()}
+URL: ${window.location.href}
+
+---
+MyExtraToYou Help System`
+            );
+
+            showSuccess('helpSuccess', 'Your help request has been sent! We\'ll get back to you soon.');
+            
+            setTimeout(() => {
+                closeHelpModal();
+            }, 3000);
+        }
+
+        async function loadUserProducts() {
+            if (!currentUser) {
+                elements.donatedProductsGrid.innerHTML = '';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/products/user/${currentUser.id}`);
+                const result = await response.json();
+
+                if (!result.success) {
+                    elements.donatedProductsGrid.innerHTML = '<p style="text-align: center; color: var(--secondary-text);">Error loading your products.</p>';
+                    return;
+                }
+
+                const userProducts = result.products;
+                
+                if (userProducts.length === 0) {
+                    elements.donatedProductsGrid.innerHTML = '<p style="text-align: center; color: var(--secondary-text);">You haven\'t added any products yet.</p>';
+                    return;
+                }
+
+                elements.donatedProductsGrid.innerHTML = userProducts.map(product => `
+                    <div class="product-card">
+                        <div class="product-images">
+                            ${product.images.slice(0, 3).map(img => `
+                                <img src="${img.url}" alt="${product.name}" class="product-image">
+                            `).join('')}
+                        </div>
+                        <div class="product-info">
+                            <h3>${product.name}</h3>
+                            <p><strong>Language:</strong> ${product.language}</p>
+                            <p><strong>Topic:</strong> ${product.topic}</p>
+                            <p><strong>Location:</strong> ${product.place}</p>
+                            <div class="star-rating">
+                                ${Array.from({length: 5}, (_, i) => `
+                                    <span class="star ${i < product.rating ? 'filled' : ''}">${i < product.rating ? '⭐' : '☆'}</span>
+                                `).join('')}
+                            </div>
+                            <p class="product-price">₹${product.price}</p>
+                            <button onclick="deleteProduct('${product.id}')" 
+                                    style="background: #e74c3c; color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 5px; cursor: pointer; margin-top: 0.5rem;">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Load user products error:', error);
+                elements.donatedProductsGrid.innerHTML = '<p style="text-align: center; color: var(--secondary-text);">Error loading your products.</p>';
+            }
+        }
+
+        async function deleteProduct(productId) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                try {
+                    const response = await fetch(`/api/products/${productId}`, {
+                        method: 'DELETE',
+                    });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        loadProducts();
+                    } else {
+                        alert('Failed to delete product. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Delete product error:', error);
+                    alert('Failed to delete product. Please try again.');
+                }
+            }
+        }
+
+        // Utility functions
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+        }
+
+        function hideError(elementId) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.classList.add('hidden');
+        }
+
+        function showSuccess(elementId, message) {
+            const successElement = document.getElementById(elementId);
+            successElement.textContent = message;
+            successElement.classList.remove('hidden');
+        }
+
+        function hideSuccess(elementId) {
+            const successElement = document.getElementById(elementId);
+            successElement.classList.add('hidden');
+        }
+
+        // Make functions available globally
+        window.deleteProduct = deleteProduct;
+        window.handleBuyProduct = handleBuyProduct;
+        window.handleRejectProduct = handleRejectProduct;
+
+        // Initialize the application when DOM is loaded
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

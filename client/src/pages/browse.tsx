@@ -32,6 +32,7 @@ interface DonatedBook {
   location: string;
   dateAdded: string;
   status: string;
+  book_issued: string;
   image: string | null;
 }
 
@@ -66,6 +67,8 @@ export default function Browse() {
       });
       setIsRequestModalOpen(false);
       setSelectedBook(null);
+      // Refresh the books list to remove the requested book
+      queryClient.invalidateQueries({ queryKey: ["/api/books"] });
     },
     onError: () => {
       toast({

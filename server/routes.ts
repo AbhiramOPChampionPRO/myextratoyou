@@ -113,8 +113,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         books = [];
       }
       
-      // Only return available books
-      const availableBooks = books.filter((book: any) => book.status === 'available');
+      // Only return available books that haven't been issued
+      const availableBooks = books.filter((book: any) => book.status === 'available' && book.book_issued === 'No');
       res.json(availableBooks);
     } catch (error) {
       res.status(500).json({ message: "Failed to get books", error });
@@ -155,6 +155,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         location,
         dateAdded: new Date().toISOString(),
         status: 'available',
+        book_issued: 'No',
         image: image || null
       };
       
@@ -321,6 +322,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Write back to file
       writeFileSync(requestsPath, JSON.stringify(requests, null, 2));
+      
+      // Mark the book as issued
+      const booksPath = join(process.cwd(), 'data', 'book.json');
+      try {
+        const booksData = readFileSync(booksPath, 'utf-8');
+        const books = JSON.parse(booksData);
+        
+        // Find and update the book
+        const bookIndex = books.findIndex((book: any) => book.id === bookId);
+        if (bookIndex !== -1) {
+          books[bookIndex].book_issued = 'Yes';
+          writeFileSync(booksPath, JSON.stringify(books, null, 2));
+        }
+      } catch (err) {
+        console.error('Error updating book issued status:', err);
+      }
       
       res.status(201).json({ message: "Request sent successfully!", request: newRequest });
     } catch (error) {

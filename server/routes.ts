@@ -1,5 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { readFileSync, writeFileSync } from "fs";
+import { join } from "path";
+import { randomUUID } from "crypto";
 import { storage } from "./storage";
 import { insertUserSchema, insertBookSchema, insertTransactionSchema, insertHelpRequestSchema } from "@shared/schema";
 import bcrypt from "bcrypt";
@@ -96,29 +99,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Book routes
+  // Book routes - using JSON file storage
   app.get("/api/books", async (req, res) => {
     try {
-      const books = await storage.getBooks();
+      const booksPath = join(process.cwd(), 'data', 'book.json');
+      let books = [];
       
-      // Get seller info for each book
-      const booksWithSellers = await Promise.all(
-        books.map(async (book) => {
-          const seller = await storage.getUser(book.sellerId);
-          return {
-            ...book,
-            seller: seller ? {
-              id: seller.id,
-              name: seller.name,
-              stars: seller.stars,
-              state: seller.state,
-              district: seller.district,
-            } : null,
-          };
-        })
-      );
+      try {
+        const booksData = readFileSync(booksPath, 'utf-8');
+        books = JSON.parse(booksData);
+      } catch (err) {
+        // If file doesn't exist or is empty, return empty array
+        books = [];
+      }
       
-      res.json(booksWithSellers);
+      // Only return available books
+      const availableBooks = books.filter((book: any) => book.status === 'available');
+      res.json(availableBooks);
     } catch (error) {
       res.status(500).json({ message: "Failed to get books", error });
     }
@@ -126,30 +123,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/books", async (req, res) => {
     try {
-      const bookData = insertBookSchema.parse(req.body);
-      const { sellerId } = req.body;
+      const {
+        title,
+        author,
+        category,
+        condition,
+        description,
+        price,
+        donatedBy,
+        donorEmail,
+        donorPhone,
+        location,
+        image
+      } = req.body;
       
-      if (!sellerId) {
-        return res.status(400).json({ message: "Seller ID is required" });
+      // Validate required fields
+      if (!title || !author || !category || !condition || !price || !donatedBy || !donorEmail || !donorPhone) {
+        return res.status(400).json({ message: "Missing required fields" });
       }
       
-      const seller = await storage.getUser(sellerId);
-      if (!seller) {
-        return res.status(404).json({ message: "Seller not found" });
+      // Validate price
+      if (price >= 400) {
+        return res.status(400).json({ message: "Price must be less than ₹400" });
       }
       
-      if (seller.isBanned) {
-        return res.status(403).json({ message: "Cannot donate books while banned" });
+      // Create new book object
+      const newBook = {
+        id: randomUUID(),
+        title,
+        author,
+        category,
+        condition,
+        description: description || '',
+        price,
+        donatedBy,
+        donorEmail,
+        donorPhone,
+        location,
+        dateAdded: new Date().toISOString(),
+        status: 'available',
+        image: image || null
+      };
+      
+      // Read existing books
+      const booksPath = join(process.cwd(), 'data', 'book.json');
+      let books = [];
+      
+      try {
+        const booksData = readFileSync(booksPath, 'utf-8');
+        books = JSON.parse(booksData);
+      } catch (err) {
+        // If file doesn't exist, start with empty array
+        books = [];
       }
       
-      const book = await storage.createBook({
-        ...bookData,
-        sellerId,
-      });
+      // Add new book
+      books.push(newBook);
       
-      res.status(201).json(book);
+      // Write back to file
+      writeFileSync(booksPath, JSON.stringify(books, null, 2));
+      
+      res.status(201).json({ message: "Book donated successfully!", book: newBook });
     } catch (error) {
-      res.status(400).json({ message: "Invalid book data", error });
+      console.error('Book donation error:', error);
+      res.status(400).json({ message: "Failed to donate book", error });
     }
   });
 

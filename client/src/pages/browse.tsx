@@ -7,10 +7,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Book, User } from "@shared/schema";
 
-interface BookWithSeller extends Book {
-  seller: Pick<User, 'id' | 'name' | 'stars' | 'state' | 'district'> | null;
+interface DonatedBook {
+  id: string;
+  title: string;
+  author: string;
+  category: string;
+  condition: string;
+  description: string;
+  price: number;
+  donatedBy: string;
+  donorEmail: string;
+  donorPhone: string;
+  location: string;
+  dateAdded: string;
+  status: string;
+  image: string | null;
 }
 
 export default function Browse() {
@@ -18,44 +30,35 @@ export default function Browse() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: books, isLoading } = useQuery<BookWithSeller[]>({
+  const { data: books, isLoading } = useQuery<DonatedBook[]>({
     queryKey: ["/api/books"],
   });
 
   const purchaseMutation = useMutation({
-    mutationFn: async (bookData: { bookId: string; buyerId: string; sellerId: string }) => {
-      return apiRequest("POST", "/api/transactions", bookData);
+    mutationFn: async (bookData: { bookId: string; donorEmail: string; donorPhone: string; title: string }) => {
+      // For now, we'll just show contact info - in a real app this would send email/SMS
+      return Promise.resolve(bookData);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
-        title: "Purchase request sent!",
-        description: "The seller has been notified of your interest.",
+        title: "Contact Information",
+        description: `Contact ${data.donorEmail} or ${data.donorPhone} for "${data.title}"`,
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/books"] });
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to send purchase request. Please try again.",
+        description: "Failed to get contact information. Please try again.",
         variant: "destructive",
       });
     },
   });
 
-  const handlePurchase = (book: BookWithSeller) => {
+  const handlePurchase = (book: DonatedBook) => {
     if (!user) {
       toast({
         title: "Please login",
-        description: "You need to be logged in to purchase books.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!book.seller) {
-      toast({
-        title: "Error",
-        description: "Seller information not available.",
+        description: "You need to be logged in to view contact information.",
         variant: "destructive",
       });
       return;
@@ -63,15 +66,15 @@ export default function Browse() {
 
     purchaseMutation.mutate({
       bookId: book.id,
-      buyerId: user.id,
-      sellerId: book.seller.id,
+      donorEmail: book.donorEmail,
+      donorPhone: book.donorPhone,
+      title: book.title
     });
   };
 
-  // Filter out user's own books and books from banned sellers
+  // Filter out user's own donated books
   const availableBooks = books?.filter(book => 
-    book.seller && 
-    book.sellerId !== user?.id
+    book.donorEmail !== user?.email
   ) || [];
 
   if (isLoading) {
@@ -132,35 +135,40 @@ export default function Browse() {
                 </div>
                 
                 <CardHeader>
-                  <CardTitle className="line-clamp-1">{book.name}</CardTitle>
+                  <CardTitle className="line-clamp-1">{book.title}</CardTitle>
                   <CardDescription className="space-y-1">
+                    <p className="text-sm font-medium">by {book.author}</p>
                     <div className="flex gap-2">
-                      <Badge variant="secondary">{book.topic}</Badge>
-                      <Badge variant="outline">{book.language}</Badge>
+                      <Badge variant="secondary">{book.category}</Badge>
+                      <Badge variant="outline">{book.condition}</Badge>
                     </div>
                     <div className="text-lg font-bold text-primary">₹{book.price}</div>
                   </CardDescription>
                 </CardHeader>
                 
                 <CardContent className="space-y-4">
-                  {book.seller && (
-                    <div className="bg-muted p-3 rounded-lg">
-                      <p className="font-semibold text-sm">{book.seller.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        ⭐ {book.seller.stars} stars
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {book.seller.district}, {book.seller.state}
-                      </p>
-                    </div>
+                  {book.description && (
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {book.description}
+                    </p>
                   )}
+                  
+                  <div className="bg-muted p-3 rounded-lg">
+                    <p className="font-semibold text-sm">Donated by: {book.donatedBy}</p>
+                    <p className="text-xs text-muted-foreground">
+                      📍 {book.location}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      📅 {new Date(book.dateAdded).toLocaleDateString()}
+                    </p>
+                  </div>
                   
                   <Button 
                     className="w-full" 
                     onClick={() => handlePurchase(book)}
                     disabled={!user || purchaseMutation.isPending}
                   >
-                    {purchaseMutation.isPending ? "Sending Request..." : "BUY NOW"}
+                    {purchaseMutation.isPending ? "Getting Contact..." : "GET CONTACT INFO"}
                   </Button>
                 </CardContent>
               </Card>

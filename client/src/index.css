@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(248 7% 98%);
+  --foreground: hsl(212 25% 9%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(212 25% 9%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(212 25% 9%);
+  --primary: hsl(203 89% 53%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(210 40% 96%);
+  --secondary-foreground: hsl(212 25% 9%);
+  --muted: hsl(210 40% 94%);
+  --muted-foreground: hsl(215 16% 47%);
+  --accent: hsl(210 40% 94%);
+  --accent-foreground: hsl(212 25% 9%);
+  --destructive: hsl(0 84% 60%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --border: hsl(214 32% 91%);
+  --input: hsl(214 32% 91%);
+  --ring: hsl(203 89% 53%);
+  --chart-1: hsl(203 89% 53%);
+  --chart-2: hsl(160 100% 36%);
+  --chart-3: hsl(42 93% 56%);
+  --chart-4: hsl(147 78% 42%);
+  --chart-5: hsl(341 75% 51%);
+  --sidebar: hsl(210 40% 96%);
+  --sidebar-foreground: hsl(212 25% 9%);
+  --sidebar-primary: hsl(203 89% 53%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(210 40% 94%);
+  --sidebar-accent-foreground: hsl(212 25% 9%);
+  --sidebar-border: hsl(214 32% 91%);
+  --sidebar-ring: hsl(203 89% 53%);
+  --font-sans: 'Poppins', sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Menlo, monospace;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: hsl(212 25% 7%);
+  --foreground: hsl(210 40% 96%);
+  --card: hsl(212 25% 10%);
+  --card-foreground: hsl(210 40% 96%);
+  --popover: hsl(212 25% 10%);
+  --popover-foreground: hsl(210 40% 96%);
+  --primary: hsl(203 89% 53%);
+  --primary-foreground: hsl(0 0% 100%);
+  --secondary: hsl(212 25% 15%);
+  --secondary-foreground: hsl(210 40% 96%);
+  --muted: hsl(212 25% 15%);
+  --muted-foreground: hsl(215 16% 65%);
+  --accent: hsl(212 25% 15%);
+  --accent-foreground: hsl(210 40% 96%);
+  --destructive: hsl(0 62% 30%);
+  --destructive-foreground: hsl(0 85% 96%);
+  --border: hsl(212 25% 15%);
+  --input: hsl(212 25% 15%);
+  --ring: hsl(203 89% 53%);
+  --chart-1: hsl(203 89% 53%);
+  --chart-2: hsl(160 100% 36%);
+  --chart-3: hsl(42 93% 56%);
+  --chart-4: hsl(147 78% 42%);
+  --chart-5: hsl(341 75% 51%);
+  --sidebar: hsl(212 25% 10%);
+  --sidebar-foreground: hsl(210 40% 96%);
+  --sidebar-primary: hsl(203 89% 53%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(212 25% 15%);
+  --sidebar-accent-foreground: hsl(210 40% 96%);
+  --sidebar-border: hsl(212 25% 15%);
+  --sidebar-ring: hsl(203 89% 53%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+  }
+}
+
+@layer utilities {
+  .fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}

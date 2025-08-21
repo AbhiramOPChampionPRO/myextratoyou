@@ -14,5 +14,21 @@
     "dateAdded": "2025-08-21T15:40:02.023Z",
     "status": "available",
     "image": null
+  },
+  {
+    "id": "25457a53-376e-41f8-bdd5-464b4c4276c8",
+    "title": "Grandma's Bag of Stories",
+    "author": "Sudha Murty",
+    "category": "Story books",
+    "condition": "Excellent- Like new",
+    "description": "Very good storybook for children",
+    "price": 120,
+    "donatedBy": "abcdefgh",
+    "donorEmail": "abcdefgh@gmail.com",
+    "donorPhone": "1234567890",
+    "location": "Jamnagar, Gujarat",
+    "dateAdded": "2025-08-21T15:51:20.605Z",
+    "status": "available",
+    "image": null
   }
 ]

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,6 +16,7 @@ export default function Donate() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   if (!user) {
     setLocation("/login");
@@ -55,6 +57,9 @@ export default function Donate() {
 
     try {
       await apiRequest("POST", "/api/books", bookData);
+      
+      // Invalidate and refetch books data so browse page updates immediately
+      queryClient.invalidateQueries({ queryKey: ["/api/books"] });
       
       // Show alert message
       alert("Book donated successfully! Your book will appear in the browse section shortly.");

@@ -26,7 +26,6 @@ interface DonatedBook {
   category: string;
   condition: string;
   description: string;
-  price: number;
   donatedBy: string;
   donorEmail: string;
   donorPhone: string;
@@ -169,8 +168,16 @@ export default function Browse() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {availableBooks.map((book) => (
               <Card key={book.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105">
-                <div className="h-48 bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center">
-                  <div className="text-6xl">📖</div>
+                <div className="h-48 bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center overflow-hidden">
+                  {book.image ? (
+                    <img 
+                      src={book.image} 
+                      alt={book.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="text-6xl">📖</div>
+                  )}
                 </div>
                 
                 <CardHeader>
@@ -181,7 +188,6 @@ export default function Browse() {
                       <Badge variant="secondary">{book.category}</Badge>
                       <Badge variant="outline">{book.condition}</Badge>
                     </div>
-                    <div className="text-lg font-bold text-primary">₹{book.price}</div>
                   </CardDescription>
                 </CardHeader>
                 

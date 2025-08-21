@@ -28,17 +28,18 @@ export default function Donate() {
     setIsLoading(true);
 
     const formData = new FormData(e.currentTarget);
-    const price = parseInt(formData.get("price") as string);
+
+    // Handle image upload
+    const imageFile = formData.get("bookPhoto") as File;
+    let imageData = null;
     
-    // Validate price is less than 400
-    if (price >= 400) {
-      toast({
-        title: "Invalid Price",
-        description: "Price must be less than ₹400.",
-        variant: "destructive",
+    if (imageFile && imageFile.size > 0) {
+      // Convert image to base64
+      const reader = new FileReader();
+      imageData = await new Promise<string>((resolve) => {
+        reader.onload = (e) => resolve(e.target?.result as string);
+        reader.readAsDataURL(imageFile);
       });
-      setIsLoading(false);
-      return;
     }
 
     const bookData = {
@@ -47,12 +48,11 @@ export default function Donate() {
       category: formData.get("category") as string,
       condition: formData.get("condition") as string,
       description: formData.get("description") as string,
-      price: price,
       donatedBy: formData.get("fullName") as string,
       donorEmail: formData.get("email") as string,
       donorPhone: formData.get("phone") as string,
       location: `${user.district}, ${user.state}`,
-      image: null // TODO: Handle file uploads
+      image: imageData
     };
 
     try {
@@ -169,21 +169,6 @@ export default function Donate() {
                   />
                 </div>
                 
-                <div className="space-y-2">
-                  <Label htmlFor="price">Your Price (₹) *</Label>
-                  <Input
-                    id="price"
-                    name="price"
-                    type="number"
-                    required
-                    min="1"
-                    max="399"
-                    placeholder="Must be less than ₹400"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Price must be less than ₹400
-                  </p>
-                </div>
               </CardContent>
             </Card>
 

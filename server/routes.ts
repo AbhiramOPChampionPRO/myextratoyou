@@ -129,7 +129,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         category,
         condition,
         description,
-        price,
         donatedBy,
         donorEmail,
         donorPhone,
@@ -138,13 +137,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } = req.body;
       
       // Validate required fields
-      if (!title || !author || !category || !condition || !price || !donatedBy || !donorEmail || !donorPhone) {
+      if (!title || !author || !category || !condition || !donatedBy || !donorEmail || !donorPhone) {
         return res.status(400).json({ message: "Missing required fields" });
-      }
-      
-      // Validate price
-      if (price >= 400) {
-        return res.status(400).json({ message: "Price must be less than ₹400" });
       }
       
       // Create new book object
@@ -155,7 +149,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         category,
         condition,
         description: description || '',
-        price,
         donatedBy,
         donorEmail,
         donorPhone,

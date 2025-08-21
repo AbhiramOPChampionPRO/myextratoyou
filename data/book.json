@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": "002bb485-f3e8-413b-b134-dd32e25181dd",
+    "title": "abcd",
+    "author": "asdsd",
+    "category": "Fiction",
+    "condition": "Good- Minor wear",
+    "description": "abcd",
+    "price": 399,
+    "donatedBy": "abc",
+    "donorEmail": "abc@gmail.com",
+    "donorPhone": "123",
+    "location": "Jamnagar, Gujarat",
+    "dateAdded": "2025-08-21T15:40:02.023Z",
+    "status": "available",
+    "image": null
+  }
+]

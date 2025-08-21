@@ -1,9 +1,20 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -29,47 +40,75 @@ export default function Browse() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [selectedBook, setSelectedBook] = useState<DonatedBook | null>(null);
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+  const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
 
   const { data: books, isLoading } = useQuery<DonatedBook[]>({
     queryKey: ["/api/books"],
   });
 
-  const purchaseMutation = useMutation({
-    mutationFn: async (bookData: { bookId: string; donorEmail: string; donorPhone: string; title: string }) => {
-      // For now, we'll just show contact info - in a real app this would send email/SMS
-      return Promise.resolve(bookData);
+  const requestMutation = useMutation({
+    mutationFn: async (requestData: {
+      bookId: string;
+      bookTitle: string;
+      requestorName: string;
+      requestorEmail: string;
+      requestorPhone?: string;
+      requestorMessage?: string;
+    }) => {
+      return apiRequest("POST", "/api/requests", requestData);
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
+      alert("Thank you, Your request has been sent");
       toast({
-        title: "Contact Information",
-        description: `Contact ${data.donorEmail} or ${data.donorPhone} for "${data.title}"`,
+        title: "Request Sent!",
+        description: "Thank you, Your request has been sent",
       });
+      setIsRequestModalOpen(false);
+      setSelectedBook(null);
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to get contact information. Please try again.",
+        description: "Failed to send request. Please try again.",
         variant: "destructive",
       });
     },
   });
 
-  const handlePurchase = (book: DonatedBook) => {
+  const handleRequestBook = (book: DonatedBook) => {
     if (!user) {
       toast({
         title: "Please login",
-        description: "You need to be logged in to view contact information.",
+        description: "You need to be logged in to request books.",
         variant: "destructive",
       });
       return;
     }
 
-    purchaseMutation.mutate({
-      bookId: book.id,
-      donorEmail: book.donorEmail,
-      donorPhone: book.donorPhone,
-      title: book.title
-    });
+    setSelectedBook(book);
+    setIsRequestModalOpen(true);
+  };
+
+  const handleSubmitRequest = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!selectedBook) return;
+
+    setIsSubmittingRequest(true);
+    const formData = new FormData(e.currentTarget);
+    
+    const requestData = {
+      bookId: selectedBook.id,
+      bookTitle: selectedBook.title,
+      requestorName: formData.get("name") as string,
+      requestorEmail: formData.get("email") as string,
+      requestorPhone: formData.get("phone") as string || undefined,
+      requestorMessage: formData.get("message") as string || undefined,
+    };
+
+    requestMutation.mutate(requestData);
+    setIsSubmittingRequest(false);
   };
 
   // Filter out user's own donated books
@@ -165,16 +204,92 @@ export default function Browse() {
                   
                   <Button 
                     className="w-full" 
-                    onClick={() => handlePurchase(book)}
-                    disabled={!user || purchaseMutation.isPending}
+                    onClick={() => handleRequestBook(book)}
+                    disabled={!user}
                   >
-                    {purchaseMutation.isPending ? "Getting Contact..." : "GET CONTACT INFO"}
+                    Request this book
                   </Button>
                 </CardContent>
               </Card>
             ))}
           </div>
         )}
+
+        {/* Request Book Modal */}
+        <Dialog open={isRequestModalOpen} onOpenChange={setIsRequestModalOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Request Book</DialogTitle>
+              <DialogDescription>
+                {selectedBook && `Request "${selectedBook.title}" by ${selectedBook.author}`}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <form onSubmit={handleSubmitRequest} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Your Name *</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  required
+                  defaultValue={user?.name || ""}
+                  placeholder="Enter your full name"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="email">Email Address *</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  defaultValue={user?.email || ""}
+                  placeholder="Enter your email address"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number (Optional)</Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  defaultValue={user?.mobile || ""}
+                  placeholder="Enter your phone number"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="message">Message (Optional)</Label>
+                <Textarea
+                  id="message"
+                  name="message"
+                  rows={3}
+                  placeholder="Any additional message for the book owner..."
+                />
+              </div>
+              
+              <div className="flex gap-3 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setIsRequestModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  className="flex-1"
+                  disabled={isSubmittingRequest || requestMutation.isPending}
+                >
+                  {isSubmittingRequest || requestMutation.isPending ? "Sending..." : "Send Request"}
+                </Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

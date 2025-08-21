@@ -55,6 +55,10 @@ export default function Donate() {
 
     try {
       await apiRequest("POST", "/api/books", bookData);
+      
+      // Show alert message
+      alert("Book donated successfully! Your book will appear in the browse section shortly.");
+      
       toast({
         title: "Book donated successfully!",
         description: "Your book will appear in the browse section shortly.",

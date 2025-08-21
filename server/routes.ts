@@ -276,6 +276,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Book request routes
+  app.post("/api/requests", async (req, res) => {
+    try {
+      const {
+        bookId,
+        bookTitle,
+        requestorName,
+        requestorEmail,
+        requestorPhone,
+        requestorMessage
+      } = req.body;
+      
+      // Validate required fields
+      if (!bookId || !bookTitle || !requestorName || !requestorEmail) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+      
+      // Create new request object
+      const newRequest = {
+        request_id: randomUUID(),
+        book_id: bookId,
+        book_title: bookTitle,
+        requestor_name: requestorName,
+        requestor_email_id: requestorEmail,
+        requestor_phone_number: requestorPhone || "",
+        requestor_message: requestorMessage || "",
+        requested_on: new Date().toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'short', 
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        }).replace(',', '')
+      };
+      
+      // Read existing requests
+      const requestsPath = join(process.cwd(), 'data', 'request.json');
+      let requests = [];
+      
+      try {
+        const requestsData = readFileSync(requestsPath, 'utf-8');
+        requests = JSON.parse(requestsData);
+      } catch (err) {
+        // If file doesn't exist, start with empty array
+        requests = [];
+      }
+      
+      // Add new request
+      requests.push(newRequest);
+      
+      // Write back to file
+      writeFileSync(requestsPath, JSON.stringify(requests, null, 2));
+      
+      res.status(201).json({ message: "Request sent successfully!", request: newRequest });
+    } catch (error) {
+      console.error('Book request error:', error);
+      res.status(400).json({ message: "Failed to send request", error });
+    }
+  });
+
   // Help request routes
   app.post("/api/help", async (req, res) => {
     try {

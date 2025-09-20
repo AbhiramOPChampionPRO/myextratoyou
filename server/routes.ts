@@ -7,6 +7,34 @@ import { storage } from "./storage";
 import { insertUserSchema, insertBookSchema, insertTransactionSchema, insertHelpRequestSchema } from "@shared/schema";
 import bcrypt from "bcrypt";
 
+// SMS notification function (simulated for now)
+function sendSMS(phoneNumber: string, message: string, recipient: string) {
+  // In a real implementation, this would connect to an SMS service
+  const timestamp = new Date().toLocaleString();
+  const maskedPhone = phoneNumber.replace(/.(?=.{4})/g, '*'); // Mask phone number for privacy
+  // Mask phone numbers in the message content for privacy
+  const maskedMessage = message.replace(/\+?\d[\d\s\-()]{6,}\d/g, (match) => {
+    return match.replace(/.(?=.{4})/g, '*');
+  });
+  
+  const smsLog = `
+📱 SMS NOTIFICATION [${timestamp}]
+` +
+                 `To: ${recipient} (${maskedPhone})
+` +
+                 `Message: ${maskedMessage}
+` +
+                 `Status: ✅ Delivered (Simulated)
+` +
+                 `${'='.repeat(50)}`;
+  
+  console.log(`Attempting SMS to ${recipient} at ${maskedPhone}`);
+  console.log(smsLog);
+  console.log(`SMS delivery completed for ${recipient}`);
+  
+  return { success: true, message: 'SMS sent successfully (simulated)' };
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // User routes
   app.post("/api/auth/register", async (req, res) => {
@@ -282,6 +310,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         requestorMessage
       } = req.body;
       
+      // Initialize SMS tracking variables
+      let donorSMSSent = false;
+      let requestorSMSSent = false;
+      
       // Validate required fields
       if (!bookId || !bookTitle || !requestorName || !requestorEmail) {
         return res.status(400).json({ message: "Missing required fields" });
@@ -335,8 +367,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
           books[bookIndex].book_issued = 'Yes';
           writeFileSync(booksPath, JSON.stringify(books, null, 2));
           
-          // Increase donor's rating by 1
+          // Get book and donor details
           const donorEmail = books[bookIndex].donorEmail;
+          const donorPhone = books[bookIndex].donorPhone;
+          const donorName = books[bookIndex].donatedBy;
+          const bookLocation = books[bookIndex].location;
+          
+          let donorStars = 0;
+          
+          // Increase donor's rating by 1 (if donor user exists)
           if (donorEmail) {
             const donor = await storage.getUserByEmail(donorEmail);
             if (donor) {
@@ -345,15 +384,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 stars: donor.stars + 1
               };
               await storage.updateUser(donor.id, updatedDonor);
+              donorStars = updatedDonor.stars;
               console.log(`Increased rating for donor ${donorEmail} to ${updatedDonor.stars} stars`);
             }
+          }
+          
+          // Send SMS to donor (send whenever donorPhone exists, regardless of user record)
+          if (donorPhone) {
+            try {
+              const donorMessage = `📚 Book Request Alert!
+
+Your book "${bookTitle}" has been requested!
+
+Requester Details:
+👤 Name: ${requestorName}
+📱 Phone: ${requestorPhone}
+📧 Email: ${requestorEmail}
+💬 Message: "${requestorMessage || 'No message'}"
+
+${donorStars > 0 ? `⭐ Your rating: ${donorStars} stars!` : ''}
+
+- MyExtraToYou`;
+              sendSMS(donorPhone, donorMessage, donorName);
+              donorSMSSent = true;
+            } catch (error) {
+              console.error(`Failed to send SMS to donor: ${error}`);
+            }
+          } else {
+            console.log('Skipping donor SMS - no phone number provided');
+          }
+          
+          // Send SMS to requestor
+          if (requestorPhone) {
+            try {
+              const requestorMessage = `📖 Request Confirmed!
+
+Your request for "${bookTitle}" has been submitted!
+
+Donor Details:
+👤 Name: ${donorName}
+📱 Phone: ${donorPhone}
+📧 Email: ${donorEmail}
+📍 Location: ${bookLocation}
+
+The donor will contact you soon to arrange pickup.
+
+- MyExtraToYou`;
+              sendSMS(requestorPhone, requestorMessage, requestorName);
+              requestorSMSSent = true;
+            } catch (error) {
+              console.error(`Failed to send SMS to requestor: ${error}`);
+            }
+          } else {
+            console.log('Skipping requestor SMS - no phone number provided');
           }
         }
       } catch (err) {
         console.error('Error updating book issued status or donor rating:', err);
       }
       
-      res.status(201).json({ message: "Request sent successfully!", request: newRequest });
+      // Build response based on actual SMS sending results
+      const smsMessage = donorSMSSent && requestorSMSSent 
+        ? "Request sent successfully! SMS notifications have been sent to both parties."
+        : donorSMSSent 
+        ? "Request sent successfully! SMS notification sent to donor."
+        : requestorSMSSent
+        ? "Request sent successfully! SMS notification sent to requestor."
+        : "Request sent successfully!";
+      
+      res.status(201).json({ 
+        message: smsMessage, 
+        request: newRequest,
+        notifications: {
+          sms_sent: donorSMSSent || requestorSMSSent,
+          donor_notified: donorSMSSent,
+          requestor_notified: requestorSMSSent,
+          total_notifications: (donorSMSSent ? 1 : 0) + (requestorSMSSent ? 1 : 0)
+        }
+      });
     } catch (error) {
       console.error('Book request error:', error);
       res.status(400).json({ message: "Failed to send request", error });

@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Advertisement } from "@/components/ui/advertisement";
 import {
   Accordion,
   AccordionContent,
@@ -93,13 +94,21 @@ export default function Help() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto p-8">
+      <div className="max-w-7xl mx-auto p-8">
         <div className="text-center mb-8 fade-in">
           <h1 className="text-4xl font-bold mb-4">Help & Support</h1>
           <p className="text-lg text-muted-foreground">We're here to help you with any questions</p>
         </div>
         
-        <div className="grid md:grid-cols-2 gap-8">
+        {/* Top Banner Ad */}
+        <div className="mb-8">
+          <Advertisement size="banner" />
+        </div>
+        
+        <div className="flex gap-8">
+          {/* Main Content */}
+          <div className="flex-1">
+            <div className="grid md:grid-cols-2 gap-8">
           {/* FAQ Section */}
           <Card>
             <CardHeader>
@@ -187,38 +196,47 @@ export default function Help() {
               </form>
             </CardContent>
           </Card>
-        </div>
-        
-        {/* Additional Help Resources */}
-        <div className="mt-12 text-center">
-          <h2 className="text-2xl font-semibold mb-6">Need More Help?</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <Card className="p-6">
-              <div className="text-3xl mb-4">📧</div>
-              <h3 className="font-semibold mb-2">Email Support</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Get in touch with our support team directly
-              </p>
-              <p className="text-sm font-medium">support@myextratoyou.com</p>
-            </Card>
+            </div>
             
-            <Card className="p-6">
-              <div className="text-3xl mb-4">💬</div>
-              <h3 className="font-semibold mb-2">Community Forum</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Connect with other users and share experiences
-              </p>
-              <Button variant="outline" size="sm">Coming Soon</Button>
-            </Card>
-            
-            <Card className="p-6">
-              <div className="text-3xl mb-4">📱</div>
-              <h3 className="font-semibold mb-2">Mobile App</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Download our mobile app for easier access
-              </p>
-              <Button variant="outline" size="sm">Coming Soon</Button>
-            </Card>
+            {/* Additional Help Resources */}
+            <div className="mt-12 text-center">
+              <h2 className="text-2xl font-semibold mb-6">Need More Help?</h2>
+              <div className="grid md:grid-cols-3 gap-6">
+                <Card className="p-6">
+                  <div className="text-3xl mb-4">📧</div>
+                  <h3 className="font-semibold mb-2">Email Support</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Get in touch with our support team directly
+                  </p>
+                  <p className="text-sm font-medium">support@myextratoyou.com</p>
+                </Card>
+                
+                <Card className="p-6">
+                  <div className="text-3xl mb-4">💬</div>
+                  <h3 className="font-semibold mb-2">Community Forum</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Connect with other users and share experiences
+                  </p>
+                  <Button variant="outline" size="sm">Coming Soon</Button>
+                </Card>
+                
+                <Card className="p-6">
+                  <div className="text-3xl mb-4">📱</div>
+                  <h3 className="font-semibold mb-2">Mobile App</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Download our mobile app for easier access
+                  </p>
+                  <Button variant="outline" size="sm">Coming Soon</Button>
+                </Card>
+              </div>
+            </div>
+          </div>
+          
+          {/* Sidebar Ad */}
+          <div className="hidden lg:block w-80">
+            <div className="sticky top-24">
+              <Advertisement size="sidebar" />
+            </div>
           </div>
         </div>
       </div>

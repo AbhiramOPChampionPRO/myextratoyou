@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Advertisement } from "@/components/ui/advertisement";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -87,13 +88,19 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto p-8">
+      <div className="max-w-7xl mx-auto p-8">
         <div className="text-center mb-8 fade-in">
           <h1 className="text-4xl font-bold mb-4">Edit Profile</h1>
           <p className="text-lg text-muted-foreground">Update your account information</p>
         </div>
         
-        <div className="max-w-2xl mx-auto">
+        {/* Top Banner Ad */}
+        <div className="mb-8">
+          <Advertisement size="banner" />
+        </div>
+        
+        <div className="flex gap-8">
+          <div className="flex-1 max-w-2xl mx-auto">
           <Card>
             <CardHeader>
               <CardTitle>Profile Information</CardTitle>
@@ -197,7 +204,15 @@ export default function Profile() {
                 </Button>
               </form>
             </CardContent>
-          </Card>
+            </Card>
+          </div>
+          
+          {/* Sidebar Ad */}
+          <div className="hidden lg:block w-80">
+            <div className="sticky top-24">
+              <Advertisement size="sidebar" />
+            </div>
+          </div>
         </div>
       </div>
     </div>

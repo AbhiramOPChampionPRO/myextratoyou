@@ -1,12 +1,23 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Advertisement } from "@/components/ui/advertisement";
 
 export default function About() {
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto p-8">
-        <div className="text-center mb-12 fade-in">
+      <div className="max-w-7xl mx-auto p-8">
+        <div className="text-center mb-8 fade-in">
           <h1 className="text-4xl font-bold mb-6">About MyExtraToYou</h1>
-          <div className="max-w-4xl mx-auto">
+        </div>
+        
+        {/* Top Banner Ad */}
+        <div className="mb-8">
+          <Advertisement size="banner" />
+        </div>
+        
+        <div className="flex gap-8">
+          {/* Main Content */}
+          <div className="flex-1">
+            <div className="max-w-4xl mx-auto">
             <p className="text-lg text-muted-foreground leading-relaxed mb-8">
               MyExtraToYou is more than just a book sharing platform - it's a movement towards accessible education and community building. 
               We believe that knowledge should be freely shared, and every book has the potential to change someone's life.
@@ -63,6 +74,14 @@ export default function About() {
                   </p>
                 </div>
               </div>
+            </div>
+            </div>
+          </div>
+          
+          {/* Sidebar Ad */}
+          <div className="hidden lg:block w-80">
+            <div className="sticky top-24">
+              <Advertisement size="sidebar" />
             </div>
           </div>
         </div>

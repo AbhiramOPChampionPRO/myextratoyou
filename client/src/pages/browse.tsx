@@ -157,7 +157,7 @@ export default function Browse() {
         
         {/* Top Banner Ad */}
         <div className="mb-8">
-          <Advertisement size="banner" />
+          <Advertisement size="banner" type="moveit" />
         </div>
         
         {availableBooks.length === 0 ? (
@@ -235,8 +235,9 @@ export default function Browse() {
             
             {/* Sidebar Ad */}
             <div className="hidden lg:block w-80">
-              <div className="sticky top-24">
-                <Advertisement size="sidebar" />
+              <div className="sticky top-24 space-y-6">
+                <Advertisement size="sidebar" type="getgreen" />
+                <Advertisement size="sidebar" type="moveit" />
               </div>
             </div>
           </div>

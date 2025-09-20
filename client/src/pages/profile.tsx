@@ -96,7 +96,7 @@ export default function Profile() {
         
         {/* Top Banner Ad */}
         <div className="mb-8">
-          <Advertisement size="banner" />
+          <Advertisement size="banner" type="moveit" />
         </div>
         
         <div className="flex gap-8">
@@ -126,6 +126,84 @@ export default function Profile() {
                       {user.isBanned ? 'Banned' : 'Active'}
                     </p>
                   </div>
+                </div>
+              </div>
+              
+              {/* Rewards System */}
+              <div className="bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-950 dark:to-blue-950 p-6 rounded-lg mb-6 border">
+                <div className="text-center mb-4">
+                  <h3 className="text-xl font-bold text-green-700 dark:text-green-300 mb-2">
+                    🌱 Green Rewards Program
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Earn beautiful plant seedlings by sharing knowledge! Every confirmed book donation earns you 1 star.
+                  </p>
+                </div>
+                
+                <div className="space-y-3">
+                  {[
+                    { stars: 4, reward: "China Aster Seedlings", icon: "🌼", unlocked: user.stars >= 4 },
+                    { stars: 10, reward: "Yellow Chrysanthemum Seedlings", icon: "🌻", unlocked: user.stars >= 10 },
+                    { stars: 15, reward: "Hybrid Marigold Seedlings", icon: "🌺", unlocked: user.stars >= 15 },
+                    { stars: 20, reward: "Petunia Seedlings", icon: "🌸", unlocked: user.stars >= 20 },
+                    { stars: 50, reward: "Premium Hybrid Varieties (Climbing Rose, 10 o'clock & Rare Types)", icon: "🌹", unlocked: user.stars >= 50 }
+                  ].map((tier, index) => (
+                    <div 
+                      key={index} 
+                      className={`flex items-center justify-between p-3 rounded-lg transition-all ${
+                        tier.unlocked 
+                          ? 'bg-green-100 dark:bg-green-900/30 border-green-300 dark:border-green-700' 
+                          : 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-gray-700'
+                      } border`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={`text-2xl ${tier.unlocked ? 'grayscale-0' : 'grayscale'}`}>
+                          {tier.icon}
+                        </div>
+                        <div>
+                          <p className={`font-semibold text-sm ${
+                            tier.unlocked 
+                              ? 'text-green-800 dark:text-green-200' 
+                              : 'text-gray-600 dark:text-gray-400'
+                          }`}>
+                            {tier.reward}
+                          </p>
+                          <p className={`text-xs ${
+                            tier.unlocked 
+                              ? 'text-green-600 dark:text-green-400' 
+                              : 'text-gray-500 dark:text-gray-500'
+                          }`}>
+                            {tier.stars} stars required
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {tier.unlocked ? (
+                          <span className="text-green-600 dark:text-green-400 font-bold text-sm">
+                            ✓ Unlocked!
+                          </span>
+                        ) : (
+                          <div className="text-right">
+                            <div className="text-xs text-gray-500">
+                              {tier.stars - user.stars} more stars
+                            </div>
+                            <div className="w-16 h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                              <div 
+                                className="h-full bg-green-500 transition-all duration-300"
+                                style={{ width: `${Math.min((user.stars / tier.stars) * 100, 100)}%` }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="mt-4 text-center">
+                  <p className="text-xs text-muted-foreground">
+                    🌟 Partner with <span className="font-semibold text-green-600">GetGreen Nursery</span> for premium quality seedlings
+                  </p>
                 </div>
               </div>
 
@@ -210,7 +288,7 @@ export default function Profile() {
           {/* Sidebar Ad */}
           <div className="hidden lg:block w-80">
             <div className="sticky top-24">
-              <Advertisement size="sidebar" />
+              <Advertisement size="sidebar" type="getgreen" />
             </div>
           </div>
         </div>

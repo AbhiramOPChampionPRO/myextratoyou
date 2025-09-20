@@ -102,7 +102,7 @@ export default function Help() {
         
         {/* Top Banner Ad */}
         <div className="mb-8">
-          <Advertisement size="banner" />
+          <Advertisement size="banner" type="getgreen" />
         </div>
         
         <div className="flex gap-8">
@@ -235,7 +235,7 @@ export default function Help() {
           {/* Sidebar Ad */}
           <div className="hidden lg:block w-80">
             <div className="sticky top-24">
-              <Advertisement size="sidebar" />
+              <Advertisement size="sidebar" type="moveit" />
             </div>
           </div>
         </div>

@@ -77,7 +77,7 @@ export default function Home() {
 
           {/* Advertisement Section */}
           <div className="mt-16 max-w-md mx-auto">
-            <Advertisement size="sidebar" />
+            <Advertisement size="sidebar" type="getgreen" />
           </div>
         </div>
       </div>

@@ -99,7 +99,7 @@ export default function Donate() {
         
         {/* Top Banner Ad */}
         <div className="mb-8 max-w-4xl mx-auto">
-          <Advertisement size="banner" />
+          <Advertisement size="banner" type="getgreen" />
         </div>
         
         <div className="max-w-6xl mx-auto">
@@ -250,7 +250,7 @@ export default function Donate() {
           
           {/* Bottom Ad */}
           <div className="mt-12 max-w-md mx-auto">
-            <Advertisement size="sidebar" />
+            <Advertisement size="sidebar" type="moveit" />
           </div>
         </div>
       </div>

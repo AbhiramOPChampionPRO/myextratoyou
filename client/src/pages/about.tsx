@@ -11,7 +11,7 @@ export default function About() {
         
         {/* Top Banner Ad */}
         <div className="mb-8">
-          <Advertisement size="banner" />
+          <Advertisement size="banner" type="moveit" />
         </div>
         
         <div className="flex gap-8">
@@ -81,7 +81,7 @@ export default function About() {
           {/* Sidebar Ad */}
           <div className="hidden lg:block w-80">
             <div className="sticky top-24">
-              <Advertisement size="sidebar" />
+              <Advertisement size="sidebar" type="getgreen" />
             </div>
           </div>
         </div>

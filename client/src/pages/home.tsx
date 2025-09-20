@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Advertisement } from "@/components/ui/advertisement";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function Home() {
@@ -72,6 +73,11 @@ export default function Home() {
                 </Button>
               </Link>
             )}
+          </div>
+
+          {/* Advertisement Section */}
+          <div className="mt-16 max-w-md mx-auto">
+            <Advertisement size="sidebar" />
           </div>
         </div>
       </div>

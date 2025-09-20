@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Advertisement } from "@/components/ui/advertisement";
 import {
   Dialog,
   DialogContent,
@@ -148,10 +149,15 @@ export default function Browse() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto p-8">
+      <div className="max-w-7xl mx-auto p-8">
         <div className="text-center mb-8 fade-in">
           <h1 className="text-4xl font-bold mb-4">Browse Available Books</h1>
           <p className="text-lg text-muted-foreground">Discover amazing books shared by our community members</p>
+        </div>
+        
+        {/* Top Banner Ad */}
+        <div className="mb-8">
+          <Advertisement size="banner" />
         </div>
         
         {availableBooks.length === 0 ? (
@@ -168,9 +174,12 @@ export default function Browse() {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {availableBooks.map((book) => (
-              <Card key={book.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105">
+          <div className="flex gap-8">
+            {/* Books Grid */}
+            <div className="flex-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {availableBooks.map((book) => (
+                  <Card key={book.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:scale-105">
                 <div className="h-48 bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center overflow-hidden">
                   {book.image ? (
                     <img 
@@ -218,9 +227,18 @@ export default function Browse() {
                   >
                     Request this book
                   </Button>
-                </CardContent>
-              </Card>
-            ))}
+                  </CardContent>
+                </Card>
+              ))}
+              </div>
+            </div>
+            
+            {/* Sidebar Ad */}
+            <div className="hidden lg:block w-80">
+              <div className="sticky top-24">
+                <Advertisement size="sidebar" />
+              </div>
+            </div>
           </div>
         )}
 

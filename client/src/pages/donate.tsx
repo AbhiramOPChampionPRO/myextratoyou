@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Advertisement } from "@/components/ui/advertisement";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -94,6 +95,11 @@ export default function Donate() {
         <div className="text-center mb-8 fade-in">
           <h1 className="text-4xl font-bold mb-4">Donate a Book</h1>
           <p className="text-lg text-muted-foreground">Share your knowledge with the community</p>
+        </div>
+        
+        {/* Top Banner Ad */}
+        <div className="mb-8 max-w-4xl mx-auto">
+          <Advertisement size="banner" />
         </div>
         
         <div className="max-w-6xl mx-auto">
@@ -241,6 +247,11 @@ export default function Donate() {
               </CardContent>
             </Card>
           </form>
+          
+          {/* Bottom Ad */}
+          <div className="mt-12 max-w-md mx-auto">
+            <Advertisement size="sidebar" />
+          </div>
         </div>
       </div>
     </div>

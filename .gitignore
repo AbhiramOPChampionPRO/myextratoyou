@@ -1,6 +1,4 @@
 node_modules/
-.local/
 dist/
 *.log
 *.lock
-.replit
